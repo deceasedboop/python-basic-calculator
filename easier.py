@@ -1,6 +1,7 @@
 import tkinter as tk
 from functools import reduce
 import operator as op
+import re
 
 
 root = tk.Tk()
@@ -26,45 +27,28 @@ def div(numbers):
 def print_input():
     label = tk.Label(root, text="Input: " + entry.get())
     label.pack()
-
-    if "+" in entry.get():
-        parts = entry.get().split("+")  # split the input by the + operator
-        operator = "+"                  # set the operator for later
-    elif "-" in entry.get():
-        parts = entry.get().split("-")
-        operator = "-"
-    elif "*" in entry.get():
-        parts = entry.get().split("*")
-        operator = "*"
-    elif "/" in entry.get():
-        parts = entry.get().split("/")
-        operator = "/"
-    else:
-        result_label.config(text="No valid operator found.")
-        return
     
-    numbers = []
-    for part in parts:                  # each part of the input is converted to an integer
-        numbers.append(int(part))
+    parts = re.split(r'(\+|-|\*|/)', entry.get())  # splits the input into numbers and operators
+    print(parts)
+    result = parts[0]  # first number
+    for i in range(1, len(parts), 2):
+        operator = parts[i]
+        num = int(parts[i + 1])
+        if operator == '+':
+            result = int(result) + num
+        elif operator == '-':
+            result = int(result) - num
+        elif operator == '*':
+            result = int(result) * num
+        elif operator == '/':
+            result = int(result) / num
+    # applies the operator to the result and the next number
+    print(parts)
     
-    if operator == "+":                 # if the operator is +, adds the numbers together
-        result = sum(numbers) 
-        result_label.config(text="Result: " + str(result))
-    
-    if operator == "-":
-        result = dif(numbers)
-        result_label.config(text="Result: " + str(result))
-
-    if operator == "*":
-        result = mul(numbers)
-        result_label.config(text="Result: " + str(result))
-
-    if operator == "/":
-        result = div(numbers)
-        result_label.config(text="Result: " + str(result))
+    result_label.config(text="Result: " + str(result))
 
 
-button = tk.Button(root, text="submit", command=print_input) # button for printing inputs
+button = tk.Button(root, text="submit", command=print_input) # button for printing inputs and results
 button.pack(pady=10)
 
 
